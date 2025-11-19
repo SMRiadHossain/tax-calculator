@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bangladesh Tax Info & Calculator</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; background: #f9f9f9; }
+    header { background: #2c3e50; color: #fff; padding: 20px 0; text-align: center; }
+    nav { display: flex; justify-content: center; background: #34495e; position: sticky; top: 0; z-index: 1000; }
+    nav a { color: #fff; padding: 15px 20px; text-decoration: none; transition: background 0.3s; }
+    nav a:hover { background: #1abc9c; }
+    section { padding: 50px 20px; max-width: 900px; margin: auto; background: #fff; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+    h2 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 10px; text-align: left; }
+    th { background: #ecf0f1; }
+    input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
+    button { background: #1abc9c; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #16a085; }
+    .output { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
+    .note { font-size: 0.9em; color: #555; margin-bottom: 10px; }
+    footer { background: #2c3e50; color: #fff; text-align: center; padding: 20px 0; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Tax Info & Calculator</h1>
+    <p>Estimate your tax and learn ways to minimize it</p>
+    <!-- Visitor counter at top-right -->
+    <!-- Visitor counter with eye icon at top-right -->
+    <div style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 5px; color: #fff; font-weight: bold;">
+        <img src="https://img.icons8.com/ios-glyphs/24/ffffff/visible.png" alt="Visitors Icon" style="height:20px; width:20px;">
+        <a href="https://www.hitwebcounter.com" target="_blank" style="color: #fff; text-decoration: none;">
+            <img src="https://hitwebcounter.com/counter/counter.php?page=1234567&style=0006&nbdigits=5&type=page&initCount=0" 
+            title="Visitor Counter" alt="Visitor Counter" border="0" style="vertical-align: middle;">
+        </a>
+    </div>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#allowances">Allowances</a>
+    <a href="#investments">Investments</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#tips">Tips</a>
+</nav>
+
+<section id="home">
+    <h2>Welcome</h2>
+    <p>This website helps salaried employees in Bangladesh understand their tax structure, exemptions, and plan investments to minimize tax. You can also use the interactive tax calculator below.</p>
+</section>
+
+<section id="allowances">
+    <h2>Allowances & Tax Exemptions</h2>
+    <table>
+        <tr>
+            <th>Allowance Type</th>
+            <th>Max Exempt Amount / Notes</th>
+        </tr>
+        <tr>
+            <td>House Rent</td>
+            <td>50% of basic salary is exempt (city corp). Enter actual house rent received.</td>
+        </tr>
+        <tr>
+            <td>Medical Allowance</td>
+            <td>Max 10% of basic salary exempt. Enter actual medical allowance received.</td>
+        </tr>
+        <tr>
+            <td>Conveyance</td>
+            <td>Max 30,000 BDT/year exempt. Enter actual conveyance received.</td>
+        </tr>
+        <tr>
+            <td>Festival Bonus</td>
+            <td>Depends on company policy. Enter actual bonus received.</td>
+        </tr>
+        <tr>
+            <td>Provident Fund</td>
+            <td>Employee 100% contribution, Employer ≤10% basic exempt. Enter amount contributed.</td>
+        </tr>
+        <tr>
+            <td>Insurance Premium</td>
+            <td>Actual premium paid is exempt if approved.</td>
+        </tr>
+    </table>
+</section>
+
+<section id="investments">
+    <h2>Investments & Tax Rebate</h2>
+    <p>You can reduce your tax by investing in approved instruments. A 15% rebate applies to eligible investments such as:</p>
+    <ul>
+        <li>Bank Deposit Schemes (DPS)</li>
+        <li>Stock market (approved stocks or mutual funds)</li>
+        <li>Life Insurance Premiums</li>
+        <li>Government-approved mutual funds</li>
+    </ul>
+</section>
+
+<section id="calculator">
+    <h2>Tax Calculator</h2>
+    <p>Enter your salary details below (actual values, not percentages):</p>
+
+    <label>Basic Salary (BDT):</label>
+    <br>
+    <input type="number" id="basic" placeholder="Ex: 370000">
+
+    <br>
+    <label>House Rent Allowance (BDT):</label>
+    
+    <div class="note">50% of basic is exempt in City Corp areas</div>
+    <input type="number" id="hra" placeholder="Ex: 185000">
+
+    <br>
+    <label>Medical Allowance (BDT):</label>
+    <div class="note">10% of basic is exempt</div>
+    <input type="number" id="medical" placeholder="Ex: 37000">
+
+    <br>
+    <label>Conveyance (BDT):</label>
+    <div class="note">Max 30,000 BDT exempt</div>
+    <input type="number" id="conveyance" placeholder="Ex: 30000">
+
+    <br>
+    <label>Festival Bonus (BDT):</label>
+    <div class="note">Depends on company policy; usually fully taxable if not exempt</div>
+    <input type="number" id="bonus" placeholder="Ex: 62900">
+
+    <br>
+    <label>Investment Amount (BDT, optional):</label>
+    <div class="note">Approved instruments for 15% rebate</div>
+    <input type="number" id="investment" placeholder="Ex: 70000">
+
+    <br>
+    <button onclick="calculateTax()">Calculate Tax</button>
+
+    <div class="output" id="output"></div>
+</section>
+
+<section id="tips">
+    <h2>Tips to Minimize Tax</h2>
+    <ul>
+        <li>Invest in approved instruments to get a 15% rebate.</li>
+        <li>Ensure HRA, medical, and conveyance are properly documented in salary slip.</li>
+        <li>Consider provident fund contributions.</li>
+        <li>Check company festival bonus and insurance schemes for exemptions.</li>
+        <li>Use the calculator to find the minimum investment required to reduce tax to the DNCC minimum.</li>
+    </ul>
+</section>
+
+<footer>
+    <p>Disclaimer: For educational purposes only. Consult NBR or a tax professional for exact figures.</p>
+</footer>
+
+<script>
+function calculateTax() {
+    let basic = parseFloat(document.getElementById('basic').value) || 0;
+    let hra = parseFloat(document.getElementById('hra').value) || 0;
+    let medical = parseFloat(document.getElementById('medical').value) || 0;
+    let convey = parseFloat(document.getElementById('conveyance').value) || 0;
+    let bonus = parseFloat(document.getElementById('bonus').value) || 0;
+    let investment = parseFloat(document.getElementById('investment').value) || 0;
+
+    // Apply exemptions
+    let hraExempt = Math.min(hra, basic*0.5);
+    let medicalExempt = Math.min(medical, basic*0.10);
+    let conveyExempt = Math.min(convey, 30000);
+    let bonusExempt = 0; // assume fully taxable
+
+    let taxableIncome = basic + (hra - hraExempt) + (medical - medicalExempt) + (convey - conveyExempt) + (bonus - bonusExempt);
+
+    // Compute slab tax
+    let slabTax = 0;
+    let remaining = taxableIncome;
+
+    if(remaining > 350000) {
+        remaining -= 350000;
+        slabTax += 0;
+        if(remaining > 100000) {
+            slabTax += 100000*0.05;
+            remaining -= 100000;
+            slabTax += remaining*0.10;
+        } else {
+            slabTax += remaining*0.05;
+        }
+    } else {
+        slabTax += 0;
+    }
+
+    // Apply rebate
+    let rebate = investment * 0.15;
+    let taxAfterRebate = Math.max(slabTax - rebate, 0);
+
+    // Apply minimum tax
+    let minTax = 5000;
+    let finalTax = taxAfterRebate < minTax ? minTax : taxAfterRebate;
+
+    // Suggest investment to reach min tax if not already
+    let suggestion = '';
+    if(taxAfterRebate > minTax){
+        let needed = Math.ceil((taxAfterRebate - minTax)/0.15);
+        suggestion = `Invest approximately ${needed.toLocaleString()} BDT more to reduce tax to the DNCC minimum of 5,000 BDT.`;
+    } else {
+        suggestion = 'Your tax is minimized to DNCC minimum.';
+    }
+
+    // Display output
+    document.getElementById('output').innerHTML = `
+        <h3>Estimated Tax Summary</h3>
+        <p><strong>Taxable Income:</strong> ${taxableIncome.toLocaleString()} BDT</p>
+        <p><strong>Slab Tax:</strong> ${slabTax.toLocaleString()} BDT</p>
+        <p><strong>Tax After Rebate:</strong> ${taxAfterRebate.toLocaleString()} BDT</p>
+        <p><strong>Final Tax Payable (Min Tax Applied):</strong> ${finalTax.toLocaleString()} BDT</p>
+        <p><strong>Suggestion:</strong> ${suggestion}</p>
+    `;
+}
+</script>
+
+</body>
+</html>
