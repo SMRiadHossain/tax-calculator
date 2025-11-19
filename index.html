@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,47 +6,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bangladesh Tax Info & Calculator</title>
 <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; background: #f9f9f9; }
-    header { background: #2c3e50; color: #fff; padding: 20px 0; text-align: center; }
-    nav { display: flex; justify-content: center; background: #34495e; position: sticky; top: 0; z-index: 1000; }
-    nav a { color: #fff; padding: 15px 20px; text-decoration: none; transition: background 0.3s; }
-    nav a:hover { background: #1abc9c; }
-    section { padding: 50px 20px; max-width: 900px; margin: auto; background: #fff; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
-    h2 { color: #2c3e50; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    table, th, td { border: 1px solid #ccc; }
-    th, td { padding: 10px; text-align: left; }
-    th { background: #ecf0f1; }
-    input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
-    button { background: #1abc9c; color: #fff; border: none; cursor: pointer; }
-    button:hover { background: #16a085; }
-    .output { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; }
-    .note { font-size: 0.9em; color: #555; margin-bottom: 10px; }
-    footer { background: #2c3e50; color: #fff; text-align: center; padding: 20px 0; }
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        line-height: 1.6; 
+        background: #f9f9f9; 
+        color: #333;
+    }
+    header { 
+        background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%); 
+        color: #fff; 
+        padding: 15px 0; 
+        text-align: center; 
+        position: relative;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+    }
+    header h1 { 
+        margin: 0; 
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    header p { 
+        margin: 5px 0 0; 
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    nav { 
+        background: #34495e; 
+        padding: 0;
+        position: sticky; 
+        top: 0; 
+        z-index: 1000; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+    }
+    nav a { 
+        color: #fff; 
+        padding: 12px 18px; 
+        text-decoration: none; 
+        transition: all 0.3s; 
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid transparent;
+    }
+    nav a:hover { 
+        background: rgba(255,255,255,0.1); 
+        border-bottom: 2px solid #1abc9c;
+    }
+    .visitor-counter { 
+        position: absolute; 
+        top: 15px; 
+        right: 20px; 
+        display: flex; 
+        align-items: center; 
+        gap: 5px; 
+        color: #fff; 
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    .visitor-counter img { 
+        height: 18px; 
+        width: 18px; 
+        opacity: 0.8;
+    }
+    section { 
+        padding: 40px 20px; 
+        max-width: 900px; 
+        margin: 20px auto; 
+        background: #fff; 
+        border-radius: 8px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    h2 { 
+        color: #2c3e50; 
+        margin-top: 0;
+        font-weight: 600;
+        border-bottom: 1px solid #ecf0f1;
+        padding-bottom: 10px;
+    }
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-top: 15px; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    table, th, td { 
+        border: 1px solid #e0e0e0; 
+    }
+    th, td { 
+        padding: 12px 15px; 
+        text-align: left; 
+    }
+    th { 
+        background: #f8f9fa; 
+        font-weight: 600;
+    }
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    input, select, button { 
+        padding: 10px; 
+        margin: 5px 0; 
+        width: 100%; 
+        max-width: 300px; 
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #1abc9c;
+        box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+    }
+    button { 
+        background: #1abc9c; 
+        color: #fff; 
+        border: none; 
+        cursor: pointer; 
+        font-weight: 600;
+        transition: background 0.3s;
+        border-radius: 4px;
+    }
+    button:hover { 
+        background: #16a085; 
+    }
+    .output { 
+        margin-top: 20px; 
+        padding: 20px; 
+        background: #f8f9fa; 
+        border-radius: 5px; 
+        border-left: 4px solid #1abc9c;
+    }
+    .note { 
+        font-size: 0.85em; 
+        color: #666; 
+        margin-bottom: 10px; 
+        font-style: italic;
+    }
+    footer { 
+        background: #2c3e50; 
+        color: #fff; 
+        text-align: center; 
+        padding: 20px 0; 
+        margin-top: 40px;
+        font-size: 0.9rem;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        header h1 {
+            font-size: 1.5rem;
+        }
+        header p {
+            font-size: 0.85rem;
+        }
+        .visitor-counter {
+            position: static;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .nav-container {
+            flex-wrap: wrap;
+        }
+        nav a {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+        }
+    }
 </style>
 </head>
 <body>
 
 <header>
-    <h1>Tax Info & Calculator</h1>
-    <p>Estimate your tax and learn ways to minimize it</p>
-    <!-- Visitor counter at top-right -->
-    <!-- Visitor counter with eye icon at top-right -->
-    <div style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 5px; color: #fff; font-weight: bold;">
-        <img src="https://img.icons8.com/ios-glyphs/24/ffffff/visible.png" alt="Visitors Icon" style="height:20px; width:20px; vertical-align:middle;">
-        <!-- hitwebcounter Code START -->
-        <a href="https://www.hitwebcounter.com/" target="_blank" style="display:inline-flex; align-items:center;">
-            <img src="https://hitwebcounter.com/counter/counter.php?page=21458192&style=0006&nbdigits=5&type=page&initCount=0" title="Free Tools" alt="Free Tools" style="height:20px; width:auto; vertical-align:middle; border:0;">
-        </a>
+    <div class="header-content">
+        <h1>Bangladesh Tax Information & Calculator</h1>
+        <p>Estimate your tax liability and learn effective strategies to minimize it</p>
+        <!-- Visitor counter with eye icon -->
+        <div style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 5px; color: #fff; font-weight: bold;">
+            <img src="https://img.icons8.com/ios-glyphs/24/ffffff/visible.png" alt="Visitors Icon" style="height:20px; width:20px; vertical-align:middle;">
+            <!-- hitwebcounter Code START -->
+            <a href="https://www.hitwebcounter.com/" target="_blank" style="display:inline-flex; align-items:center;">
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21458192&style=0006&nbdigits=5&type=page&initCount=0" title="Free Tools" alt="Free Tools" style="height:20px; width:auto; vertical-align:middle; border:0;">
+            </a>
+        </div>
     </div>
 </header>
 
 <nav>
-    <a href="#home">Home</a>
-    <a href="#allowances">Allowances</a>
-    <a href="#investments">Investments</a>
-    <a href="#calculator">Calculator</a>
-    <a href="#tips">Tips</a>
+    <div class="nav-container">
+        <a href="#home">Home</a>
+        <a href="#allowances">Allowances</a>
+        <a href="#investments">Investments</a>
+        <a href="#calculator">Calculator</a>
+        <a href="#tips">Tips</a>
+    </div>
 </nav>
 
 <section id="home">
@@ -219,3 +393,12 @@ function calculateTax() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
