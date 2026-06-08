@@ -5,283 +5,356 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bangladesh Tax Info & Calculator</title>
 <style>
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        margin: 0; 
-        padding: 0; 
-        line-height: 1.6; 
-        background: #f9f9f9; 
-        color: #333;
+/* === BASE === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0; line-height: 1.6;
+    background: #f9f9f9; color: #333;
+}
+header {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+    color: #fff; padding: 18px 0; text-align: center;
+    position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.header-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; }
+.visitor-counter {
+    position: absolute; top: 15px; right: 20px;
+    display: flex; align-items: center; gap: 5px;
+    color: #fff; font-weight: bold;
+}
+header h1 { margin: 0; font-size: 1.8rem; font-weight: 600; letter-spacing: 0.5px; }
+header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
+.tax-year-badge {
+    display: inline-block;
+    background: rgba(26,188,156,0.2); border: 1px solid rgba(26,188,156,0.45);
+    color: #1abc9c; font-size: 0.72rem; font-weight: 700;
+    padding: 3px 12px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.6px;
+}
+nav {
+    background: #34495e; padding: 0; position: sticky; top: 0;
+    z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; }
+nav a {
+    color: #fff; padding: 12px 18px; text-decoration: none; transition: all 0.3s;
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.3px; border-bottom: 2px solid transparent;
+}
+nav a:hover { background: rgba(255,255,255,0.1); border-bottom: 2px solid #1abc9c; }
+section {
+    padding: 30px 25px; max-width: 940px; margin: 20px auto;
+    background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+h2 {
+    color: #2c3e50; margin-top: 0; font-weight: 600;
+    border-bottom: 1px solid #ecf0f1; padding-bottom: 10px;
+}
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+table, th, td { border: 1px solid #e0e0e0; }
+th, td { padding: 10px 14px; text-align: left; font-size: 0.88rem; }
+th { background: #f8f9fa; font-weight: 600; }
+tr:nth-child(even) { background-color: #f8f9fa; }
+ul { padding-left: 20px; }
+li { margin-bottom: 7px; }
+.note { font-size: 0.78rem; color: #888; margin: 2px 0 8px; font-style: italic; }
+
+/* === CALCULATOR LAYOUT === */
+#calculator { padding: 25px; }
+.calc-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;
+}
+.calc-right { position: sticky; top: 64px; }
+
+/* === PROFILE CARD === */
+.profile-card {
+    background: #f8f9fa; border: 1px solid #e4e9ed;
+    border-radius: 6px; padding: 15px; margin-bottom: 18px;
+}
+.profile-card h3 {
+    margin: 0 0 13px; font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: #2c3e50;
+}
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.profile-field { display: flex; flex-direction: column; gap: 4px; }
+.profile-field > .field-label {
+    font-size: 0.73rem; font-weight: 700; color: #666;
+    text-transform: uppercase; letter-spacing: 0.5px;
+}
+.profile-field.full { grid-column: 1 / -1; }
+
+/* Toggle button groups */
+.toggle-group {
+    display: flex; border: 1px solid #d5dde3; border-radius: 4px;
+    overflow: hidden; background: #fff;
+}
+.toggle-group input[type="radio"] { display: none; }
+.toggle-group .tog-label {
+    flex: 1; text-align: center; padding: 6px 4px; font-size: 0.8rem;
+    font-weight: 500; cursor: pointer; background: #fff; color: #555;
+    transition: all 0.18s; user-select: none; border: none;
+}
+.toggle-group .tog-label:not(:last-of-type) { border-right: 1px solid #d5dde3; }
+.toggle-group input[type="radio"]:checked + .tog-label {
+    background: #2c3e50; color: #fff;
+}
+
+/* Checkbox rows */
+.check-row {
+    display: flex; align-items: center; gap: 8px; margin-top: 1px;
+}
+.check-row input[type="checkbox"] {
+    width: 15px; height: 15px; accent-color: #1abc9c;
+    cursor: pointer; flex-shrink: 0; margin: 0;
+}
+.check-row .clabel { font-size: 0.82rem; color: #444; cursor: pointer; }
+.warn-badge {
+    font-size: 0.68rem; background: #e74c3c; color: #fff;
+    padding: 1px 7px; border-radius: 10px; font-weight: 700;
+}
+
+/* Threshold pill */
+.threshold-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(26,188,156,0.08); border: 1px solid rgba(26,188,156,0.3);
+    color: #16a085; font-size: 0.77rem; font-weight: 700;
+    padding: 4px 11px; border-radius: 20px; margin-top: 11px;
+}
+
+/* === INPUT GROUPS === */
+.input-group { margin-bottom: 14px; }
+.input-group > label {
+    display: block; font-size: 0.83rem; font-weight: 600;
+    color: #444; margin-bottom: 5px;
+}
+.input-group input[type="number"],
+.input-group select {
+    padding: 9px 12px; border: 1px solid #ddd; border-radius: 4px;
+    font-family: inherit; font-size: 0.93rem; width: 100%; box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+}
+.input-group input[type="number"]:focus,
+.input-group select:focus {
+    outline: none; border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26,188,156,0.12);
+}
+.input-with-cap { position: relative; }
+.input-with-cap input { padding-right: 82px; }
+.cap-tag {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 0.67rem; background: #fff8e1; color: #8a6000;
+    border: 1px solid #ffc107; padding: 2px 5px; border-radius: 3px;
+    font-weight: 700; pointer-events: none; white-space: nowrap;
+}
+
+/* Sub-cards (collapsible) */
+.sub-card { border: 1px solid #e4e9ed; border-radius: 6px; margin-bottom: 14px; overflow: hidden; }
+.sub-card-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: #f8f9fa; cursor: pointer;
+    user-select: none; font-size: 0.85rem; font-weight: 600;
+    color: #2c3e50; transition: background 0.2s;
+}
+.sub-card-head:hover { background: #eef1f4; }
+.sub-card-head .chev { transition: transform 0.22s; font-size: 0.65rem; color: #999; }
+.sub-card-head.open .chev { transform: rotate(180deg); }
+.sub-card-body { padding: 14px; display: none; }
+.sub-card-body.open { display: block; }
+
+/* Salary breakdown subtotals */
+.gross-display {
+    background: #eafaf6; border: 1px solid #a8e6d9; border-radius: 5px;
+    padding: 9px 13px; margin-top: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.gross-display .gd-label { font-size: 0.8rem; color: #16a085; font-weight: 600; }
+.gross-display .gd-val { font-size: 1rem; color: #0e7a62; font-weight: 700; }
+
+/* Perquisite rows */
+.perq-block { margin-bottom: 13px; }
+.perq-block:last-child { margin-bottom: 0; }
+.perq-block > .perq-label {
+    font-size: 0.83rem; font-weight: 600; color: #444; margin-bottom: 6px; display: block;
+}
+.perq-inline { display: flex; align-items: center; gap: 10px; }
+.perq-toggle {
+    display: flex; border: 1px solid #d5dde3; border-radius: 4px;
+    overflow: hidden; flex-shrink: 0;
+}
+.perq-toggle input[type="radio"] { display: none; }
+.perq-toggle .pt-label {
+    padding: 6px 14px; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; background: #fff; color: #666;
+    transition: all 0.18s; user-select: none;
+}
+.perq-toggle .pt-label:not(:last-of-type) { border-right: 1px solid #d5dde3; }
+.perq-toggle input[type="radio"]:checked + .pt-label { background: #2c3e50; color: #fff; }
+.perq-extra { margin-top: 8px; }
+
+/* Investment total row */
+.inv-total {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f0f7ff; border: 1px solid #b8d4f0; border-radius: 4px;
+    padding: 8px 12px; margin-top: 6px; font-size: 0.85rem;
+}
+.inv-total .it-label { color: #2471a3; font-weight: 600; }
+.inv-total .it-val { color: #154360; font-weight: 700; }
+
+/* Calc button */
+.calc-btn {
+    background: #1abc9c; color: #fff; border: none; cursor: pointer;
+    font-weight: 700; font-family: inherit; font-size: 0.95rem;
+    padding: 12px; width: 100%; border-radius: 5px;
+    transition: background 0.25s, transform 0.1s; margin-top: 6px;
+    letter-spacing: 0.3px;
+}
+.calc-btn:hover { background: #16a085; }
+.calc-btn:active { transform: scale(0.99); }
+
+/* === RESULTS PANEL === */
+.results-panel {
+    background: #fff; border-radius: 6px; border: 1px solid #e0e0e0; overflow: hidden;
+}
+.results-panel.live { border-color: #1abc9c; }
+.rp-header {
+    background: #2c3e50; color: #fff; padding: 11px 16px;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.rp-header .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #1abc9c;
+    display: none; animation: pulse 1.4s infinite;
+}
+.results-panel.live .rp-header .live-dot { display: inline-block; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.rp-placeholder {
+    padding: 36px 20px; text-align: center; color: #bbb;
+    font-size: 0.85rem; line-height: 1.8;
+}
+.rp-placeholder svg { display: block; margin: 0 auto 12px; }
+.rp-body { display: none; }
+.results-panel.live .rp-body { display: block; }
+.results-panel.live .rp-placeholder { display: none; }
+
+.rs { padding: 11px 16px; border-bottom: 1px solid #f0f0f0; }
+.rs:last-child { border-bottom: none; }
+.rs h4 {
+    margin: 0 0 7px; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.9px; color: #aaa;
+}
+.rr {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 0.86rem; padding: 2px 0; color: #555;
+}
+.rr .rl { flex: 1; padding-right: 8px; }
+.rr .rv { font-weight: 600; white-space: nowrap; }
+.rr.sub .rv { color: #16a085; }
+.rr.add .rv { color: #e67e22; }
+.rr.rebate .rv { color: #2980b9; }
+.rr.tot {
+    font-weight: 700; color: #2c3e50; font-size: 0.92rem;
+    border-top: 1px solid #e8e8e8; margin-top: 5px; padding-top: 6px;
+}
+.slab-table { width: 100%; font-size: 0.8rem; border-collapse: collapse; }
+.slab-table td { padding: 2px 3px; }
+.slab-table td:nth-child(2) { text-align: center; color: #888; }
+.slab-table td:nth-child(3) { text-align: right; font-weight: 600; }
+.slab-table tr.s-active td { color: #2c3e50; }
+.slab-table tr.s-active td:nth-child(3) { color: #2c3e50; }
+.slab-table tr.s-zero td { color: #bbb; }
+.slab-table tr.s-empty td { color: #ddd; }
+
+.cap-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+.cap-pill { font-size: 0.69rem; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+.cap-pill.binding { background: #2c3e50; color: #fff; }
+.cap-pill.out { background: #f0f0f0; color: #bbb; text-decoration: line-through; }
+
+.final-box {
+    margin: 0 16px 14px; background: #2c3e50; color: #fff;
+    border-radius: 6px; padding: 13px 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.final-box .fb-label { font-size: 0.82rem; opacity: 0.8; line-height: 1.4; }
+.final-box .fb-label small { display: block; font-size: 0.7rem; opacity: 0.7; margin-top: 3px; }
+.final-box .fb-amount { font-size: 1.38rem; font-weight: 700; color: #1abc9c; white-space: nowrap; }
+.mintax-badge {
+    display: inline-block; font-size: 0.69rem; background: #f39c12;
+    color: #fff; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-top: 4px;
+}
+.late-warn {
+    margin: 0 16px 12px; background: #fdf3f3;
+    border-left: 3px solid #e74c3c; padding: 8px 12px;
+    font-size: 0.8rem; color: #c0392b; border-radius: 0 4px 4px 0;
+}
+.opt-tip {
+    margin: 0 16px 13px; background: #eafaf6;
+    border-left: 3px solid #1abc9c; padding: 9px 12px;
+    font-size: 0.8rem; color: #0e7a62; border-radius: 0 4px 4px 0;
+}
+.opt-tip strong { display: block; font-size: 0.82rem; margin-bottom: 2px; }
+
+/* === INFO SECTIONS === */
+.info-badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700;
+    background: #eafaf6; color: #16a085; border: 1px solid #a8e6d9;
+    padding: 2px 9px; border-radius: 10px; margin-left: 8px; vertical-align: middle;
+}
+.info-badge.updated { background: #fff3cd; color: #856404; border-color: #ffc107; }
+
+/* === FOOTER === */
+footer {
+    background: #2c3e50; color: #fff; text-align: center;
+    padding: 30px 20px; margin-top: 40px; font-size: 0.9rem;
+}
+.footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.footer-disclaimer { max-width: 800px; margin: 0 auto; line-height: 1.6; opacity: 0.9; }
+.social-media { display: flex; justify-content: center; gap: 15px; list-style: none; padding: 0; margin: 0; }
+.social-media li { display: inline-block; }
+.social-media a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.3s ease; color: #fff; text-decoration: none; }
+.social-media a:hover { background: #1abc9c; transform: translateY(-3px); }
+.social-media img { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+.footer-bottom { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); width: 100%; font-size: 0.85rem; opacity: 0.7; }
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .visitor-counter {
+        top: 6px; right: 8px; gap: 3px;
+        transform: scale(0.78); transform-origin: top right;
     }
-    header { 
-        background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%); 
-        color: #fff; 
-        padding: 15px 0; 
-        text-align: center; 
-        position: relative;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        position: relative;
-    }
-    header h1 { 
-        margin: 0; 
-        font-size: 1.8rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-    header p { 
-        margin: 5px 0 0; 
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    nav { 
-        background: #34495e; 
-        padding: 0;
-        position: sticky; 
-        top: 0; 
-        z-index: 1000; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-    }
-    nav a { 
-        color: #fff; 
-        padding: 12px 18px; 
-        text-decoration: none; 
-        transition: all 0.3s; 
-        font-size: 0.9rem;
-        font-weight: 500;
-        letter-spacing: 0.3px;
-        border-bottom: 2px solid transparent;
-    }
-    nav a:hover { 
-        background: rgba(255,255,255,0.1); 
-        border-bottom: 2px solid #1abc9c;
-    }
-    .visitor-counter { 
-        position: absolute; 
-        top: 15px; 
-        right: 20px; 
-        display: flex; 
-        align-items: center; 
-        gap: 5px; 
-        color: #fff; 
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-    .visitor-counter img { 
-        height: 18px; 
-        width: 18px; 
-        opacity: 0.8;
-    }
-    section { 
-        padding: 40px 20px; 
-        max-width: 900px; 
-        margin: 20px auto; 
-        background: #fff; 
-        border-radius: 8px; 
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    h2 { 
-        color: #2c3e50; 
-        margin-top: 0;
-        font-weight: 600;
-        border-bottom: 1px solid #ecf0f1;
-        padding-bottom: 10px;
-    }
-    table { 
-        width: 100%; 
-        border-collapse: collapse; 
-        margin-top: 15px; 
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    table, th, td { 
-        border: 1px solid #e0e0e0; 
-    }
-    th, td { 
-        padding: 12px 15px; 
-        text-align: left; 
-    }
-    th { 
-        background: #f8f9fa; 
-        font-weight: 600;
-    }
-    tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-    input, select, button { 
-        padding: 10px; 
-        margin: 5px 0; 
-        width: 100%; 
-        max-width: 300px; 
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-family: inherit;
-    }
-    input:focus, select:focus {
-        outline: none;
-        border-color: #1abc9c;
-        box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
-    }
-    button { 
-        background: #1abc9c; 
-        color: #fff; 
-        border: none; 
-        cursor: pointer; 
-        font-weight: 600;
-        transition: background 0.3s;
-        border-radius: 4px;
-    }
-    button:hover { 
-        background: #16a085; 
-    }
-    .output { 
-        margin-top: 20px; 
-        padding: 20px; 
-        background: #f8f9fa; 
-        border-radius: 5px; 
-        border-left: 4px solid #1abc9c;
-    }
-    .note { 
-        font-size: 0.85em; 
-        color: #666; 
-        margin-bottom: 10px; 
-        font-style: italic;
-    }
-    
-    /* Footer Styles */
-    footer { 
-        background: #2c3e50; 
-        color: #fff; 
-        text-align: center; 
-        padding: 30px 20px; 
-        margin-top: 40px;
-        font-size: 0.9rem;
-    }
-    .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    .footer-disclaimer {
-        max-width: 800px;
-        margin: 0 auto;
-        line-height: 1.6;
-        opacity: 0.9;
-    }
-    .social-media {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    .social-media li {
-        display: inline-block;
-    }
-    .social-media a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-        color: #fff;
-        text-decoration: none;
-    }
-    .social-media a:hover {
-        background: #1abc9c;
-        transform: translateY(-3px);
-    }
-    .social-media img {
-        width: 20px;
-        height: 20px;
-        filter: brightness(0) invert(1);
-    }
-    .footer-bottom {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        width: 100%;
-        font-size: 0.85rem;
-        opacity: 0.7;
-    }
-    
-    ul {
-        padding-left: 20px;
-    }
-    li {
-        margin-bottom: 8px;
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        header h1 {
-            font-size: 1.5rem;
-        }
-        header p {
-            font-size: 0.85rem;
-        }
-        .visitor-counter {
-            position: static;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        .nav-container {
-            flex-wrap: wrap;
-        }
-        nav a {
-            padding: 10px 15px;
-            font-size: 0.85rem;
-        }
-        .footer-content {
-            gap: 15px;
-        }
-        .social-media {
-            gap: 10px;
-        }
-        .social-media a {
-            width: 36px;
-            height: 36px;
-        }
-    }
+    .header-content { padding-top: 26px; }
+    header h1 { font-size: 1.4rem; }
+    header p { font-size: 0.82rem; }
+    .nav-container { flex-wrap: wrap; }
+    nav a { padding: 10px 12px; font-size: 0.82rem; }
+    section { padding: 18px 15px; margin: 10px 8px; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .calc-right { position: static; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .footer-content { gap: 15px; }
+    .social-media { gap: 10px; }
+    .social-media a { width: 36px; height: 36px; }
+}
 </style>
 </head>
 <body>
 
 <header>
-    <div class="header-content">        
-        <!-- Visitor counter with eye icon -->
-        <div style="position: absolute; top: 15px; right: 20px; display: flex; align-items: center; gap: 5px; color: #fff; font-weight: bold;">
-            <img src="https://img.icons8.com/ios-glyphs/24/ffffff/visible.png" alt="Visitors Icon" style="height:20px; width:20px; vertical-align:middle;">
-            <!-- hitwebcounter Code START -->
-            <a href="https://www.hitwebcounter.com/" target="_blank" style="display:inline-flex; align-items:center;">
-                <img src="https://hitwebcounter.com/counter/counter.php?page=21458192&style=0006&nbdigits=5&type=page&initCount=0" title="Free Tools" alt="Free Tools" style="height:20px; width:auto; vertical-align:middle; border:0;">
+    <div class="header-content">
+        <div class="visitor-counter">
+            <img src="https://img.icons8.com/ios-glyphs/24/ffffff/visible.png" alt="" style="height:20px;width:20px;vertical-align:middle;">
+            <a href="https://www.hitwebcounter.com/" target="_blank" style="display:inline-flex;align-items:center;">
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21458192&style=0006&nbdigits=5&type=page&initCount=0" title="Free Tools" alt="Free Tools" style="height:20px;width:auto;vertical-align:middle;border:0;">
             </a>
         </div>
-        <br>
-        <h1>Tax Information & Calculator</h1>
-        <p>Estimate your tax liability and learn effective strategies to minimize it</p>
+        <h1>Tax Information &amp; Calculator</h1>
+        <p>Estimate your tax liability under Finance Ordinance 2025 and plan smart investments</p>
+        <div class="tax-year-badge">TAX YEAR 2025/2026 &nbsp;|&nbsp; ASSESSMENT YEAR 2026-2027</div>
     </div>
 </header>
 
 <nav>
     <div class="nav-container">
         <a href="#home">Home</a>
+        <a href="#tax-rules">Tax Rules</a>
         <a href="#investments">Investments</a>
         <a href="#calculator">Calculator</a>
         <a href="#tips">Tips</a>
@@ -290,147 +363,335 @@
 
 <section id="home">
     <h2>Welcome</h2>
-    <p>This website helps salaried employees in Bangladesh understand their tax structure, exemptions, and plan investments to minimize tax. You can also use the interactive tax calculator below.</p>
+    <p>This calculator is fully updated for the <strong>Finance Ordinance 2025</strong> (Income Tax Act 2023). It reflects the new consolidated salary rule (Section 32), revised perquisite valuations (Section 33), updated six-band progressive slabs, and the enhanced BDT 500,000 standard exemption cap.</p>
+    <p>Enter your details in the calculator below for a transparent, step-by-step tax breakdown.</p>
 </section>
 
-<section id="allowances">
-    <h2>Allowances & Tax Exemptions</h2>
+<section id="tax-rules">
+    <h2>Tax Rules 2025/2026 <span class="info-badge updated">Finance Ordinance 2025</span></h2>
+
+    <h3 style="color:#2c3e50;font-size:1rem;margin-top:20px;">Tax-Free Thresholds by Category</h3>
     <table>
-        <tr>
-            <th>Allowance Type</th>
-            <th>Max Exempt Amount / Notes</th>
-        </tr>
-        <tr>
-            <td>House Rent</td>
-            <td>50% of basic salary is exempt (city corp). Enter actual house rent received.</td>
-        </tr>
-        <tr>
-            <td>Medical Allowance</td>
-            <td>Max 10% of basic salary exempt. Enter actual medical allowance received.</td>
-        </tr>
-        <tr>
-            <td>Conveyance</td>
-            <td>Max 30,000 BDT/year exempt. Enter actual conveyance received.</td>
-        </tr>
-        <tr>
-            <td>Festival Bonus</td>
-            <td>Depends on company policy. Enter actual bonus received.</td>
-        </tr>
-        <tr>
-            <td>Provident Fund</td>
-            <td>Employee 100% contribution, Employer ≤10% basic exempt. Enter amount contributed.</td>
-        </tr>
-        <tr>
-            <td>Insurance Premium</td>
-            <td>Actual premium paid is exempt if approved.</td>
-        </tr>
+        <tr><th>Category</th><th>Tax-Free Threshold (BDT)</th></tr>
+        <tr><td>General Male (under 65)</td><td>375,000</td></tr>
+        <tr><td>Women &amp; Senior Citizens (65+)</td><td>425,000</td></tr>
+        <tr><td>Persons with Disabilities / Third Gender</td><td>500,000</td></tr>
+        <tr><td>Gazetted War-Wounded Freedom Fighters</td><td>525,000</td></tr>
+    </table>
+
+    <h3 style="color:#2c3e50;font-size:1rem;margin-top:20px;">Progressive Tax Slabs</h3>
+    <table>
+        <tr><th>Income Slice (BDT)</th><th>Rate</th></tr>
+        <tr><td>Up to threshold (varies by category)</td><td>0%</td></tr>
+        <tr><td>Next 300,000</td><td>10%</td></tr>
+        <tr><td>Next 400,000</td><td>15%</td></tr>
+        <tr><td>Next 500,000</td><td>20%</td></tr>
+        <tr><td>Next 2,000,000</td><td>25%</td></tr>
+        <tr><td>Remaining balance</td><td>30%</td></tr>
+    </table>
+
+    <h3 style="color:#2c3e50;font-size:1rem;margin-top:20px;">Standard Exemption (Section 32)</h3>
+    <p>Under Finance Ordinance 2025, no individual per-component exemptions (HRA, Medical, Conveyance) exist. A single consolidated exemption applies: <strong>the lesser of 1/3 of Gross Annual Salary or BDT 500,000</strong>.</p>
+
+    <h3 style="color:#2c3e50;font-size:1rem;margin-top:20px;">Perquisites (Section 33)</h3>
+    <table>
+        <tr><th>Benefit</th><th>Annual Taxable Addition (BDT)</th></tr>
+        <tr><td>Company Vehicle — up to 1,500 cc</td><td>180,000 (15,000/month)</td></tr>
+        <tr><td>Company Vehicle — 1,501–2,000 cc</td><td>240,000 (20,000/month)</td></tr>
+        <tr><td>Company Vehicle — 2,001–2,500 cc</td><td>360,000 (30,000/month)</td></tr>
+        <tr><td>Company Vehicle — above 2,500 cc</td><td>600,000 (50,000/month)</td></tr>
+        <tr><td>Company Accommodation</td><td>Actual annual rent paid by employer</td></tr>
     </table>
 </section>
 
 <section id="investments">
-    <h2>Investments & Tax Rebate</h2>
-    <p>You can reduce your tax by investing in approved instruments. A 15% rebate applies to eligible investments such as:</p>
+    <h2>Investments &amp; Tax Rebate <span class="info-badge">Section 78</span></h2>
+    <p>A flat <strong>15% rebate</strong> applies to eligible investments. The rebate principal is capped at the <em>lowest</em> of:</p>
     <ul>
-        <li>Bank Deposit Schemes (DPS)</li>
-        <li>Stock market (approved stocks or mutual funds)</li>
-        <li>Life Insurance Premiums</li>
-        <li>Government-approved mutual funds</li>
+        <li>Actual eligible investments (DPS capped at BDT 120,000)</li>
+        <li>20% of your Net Taxable Income</li>
+        <li>BDT 1,000,000</li>
     </ul>
+    <table>
+        <tr><th>Instrument</th><th>Eligible Cap</th><th>Rebate Rate</th></tr>
+        <tr><td>DPS (Deposit Pension Scheme)</td><td>Max BDT 120,000</td><td>15%</td></tr>
+        <tr><td>Sanchayapatra (Govt. Savings Bonds)</td><td>No sub-cap</td><td>15%</td></tr>
+        <tr><td>Stock Market (DSE/CSE listed shares, bonds &amp; mutual funds)</td><td>No sub-cap</td><td>15%</td></tr>
+        <tr><td>Life Insurance Premiums</td><td>No sub-cap</td><td>15%</td></tr>
+    </table>
+    <p class="note" style="margin-top:10px;">Late filing (after 30 November) forfeits the entire 15% rebate — only the gross slab tax applies.</p>
 </section>
 
 <section id="calculator">
-    <h2>Tax Calculator</h2>
-    <p>Enter your salary details below (actual values, not percentages):</p>
+    <h2>Tax Calculator <span class="info-badge updated">2025 Rules</span></h2>
 
-    <label>Basic Salary (BDT):</label>
-    <br>
-    <input type="number" id="basic" placeholder="Ex: 370000">
+    <div class="calc-grid">
+        <!-- LEFT COLUMN: INPUTS -->
+        <div class="calc-left">
 
-    <br>
-    <label>House Rent Allowance (BDT):</label>
-    
-    <div class="note">50% of basic is exempt in City Corp areas</div>
-    <input type="number" id="hra" placeholder="Ex: 185000">
+            <!-- 1. TAXPAYER PROFILE -->
+            <div class="profile-card">
+                <h3>&#9998; Taxpayer Profile</h3>
+                <div class="profile-grid">
+                    <!-- Gender -->
+                    <div class="profile-field">
+                        <span class="field-label">Gender</span>
+                        <div class="toggle-group">
+                            <input type="radio" name="gender" id="g_male" value="male" checked>
+                            <label class="tog-label" for="g_male">Male</label>
+                            <input type="radio" name="gender" id="g_female" value="female">
+                            <label class="tog-label" for="g_female">Female</label>
+                        </div>
+                    </div>
+                    <!-- Age -->
+                    <div class="profile-field">
+                        <span class="field-label">Age Group</span>
+                        <div class="toggle-group">
+                            <input type="radio" name="age" id="a_under65" value="under65" checked>
+                            <label class="tog-label" for="a_under65">Under 65</label>
+                            <input type="radio" name="age" id="a_senior" value="senior">
+                            <label class="tog-label" for="a_senior">65 or above</label>
+                        </div>
+                    </div>
+                    <!-- Special Category -->
+                    <div class="profile-field full">
+                        <span class="field-label">Special Category</span>
+                        <div class="input-group" style="margin-bottom:0">
+                            <select id="special_cat" onchange="liveCalc()">
+                                <option value="none">None</option>
+                                <option value="disabled">Person with Disability / Third Gender</option>
+                                <option value="ff">Gazetted War-Wounded Freedom Fighter</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Flags -->
+                    <div class="profile-field">
+                        <span class="field-label">Filing</span>
+                        <label class="check-row" for="late_filing">
+                            <input type="checkbox" id="late_filing" onchange="liveCalc()">
+                            <span class="clabel">Late Filing <span class="warn-badge">Loses Rebate</span></span>
+                        </label>
+                    </div>
+                    <div class="profile-field">
+                        <span class="field-label">Taxpayer Status</span>
+                        <label class="check-row" for="first_time">
+                            <input type="checkbox" id="first_time" onchange="liveCalc()">
+                            <span class="clabel">First-time taxpayer</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="threshold-pill" id="threshold_display">
+                    Tax-Free Threshold: <strong>BDT 375,000</strong>
+                </div>
+            </div>
 
-    <br>
-    <label>Medical Allowance (BDT):</label>
-    <div class="note">10% of basic is exempt</div>
-    <input type="number" id="medical" placeholder="Ex: 37000">
+            <!-- 2. GROSS SALARY -->
+            <div class="input-group">
+                <label for="gross_salary">Gross Annual Salary (BDT)</label>
+                <input type="number" id="gross_salary" placeholder="e.g. 1,950,000" min="0" oninput="syncGross(); liveCalc();">
+                <div class="note">Include basic salary, all allowances (HRA, Medical, Conveyance), and festival bonuses.</div>
+            </div>
 
-    <br>
-    <label>Conveyance (BDT):</label>
-    <div class="note">Max 30,000 BDT exempt</div>
-    <input type="number" id="conveyance" placeholder="Ex: 30000">
+            <!-- 2b. SALARY BREAKDOWN (optional) -->
+            <div class="sub-card">
+                <div class="sub-card-head" onclick="toggleCard('breakdown')">
+                    <span>&#9997; Break down my salary <span style="font-weight:400;color:#999;font-size:0.78rem;">(optional)</span></span>
+                    <span class="chev" id="chev_breakdown">&#9660;</span>
+                </div>
+                <div class="sub-card-body" id="body_breakdown">
+                    <p class="note" style="margin-top:0;">Under Finance Ordinance 2025, all components are consolidated — no per-item exemptions apply. This breakdown only auto-fills the Gross Salary above.</p>
+                    <div class="input-group">
+                        <label>Basic Salary (BDT)</label>
+                        <input type="number" id="b_basic" placeholder="e.g. 100,000" oninput="calcBreakdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>House Rent Allowance (BDT)</label>
+                        <input type="number" id="b_hra" placeholder="e.g. 50,000" oninput="calcBreakdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Medical Allowance (BDT)</label>
+                        <input type="number" id="b_medical" placeholder="e.g. 10,000" oninput="calcBreakdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Conveyance (BDT)</label>
+                        <input type="number" id="b_convey" placeholder="e.g. 30,000" oninput="calcBreakdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Festival Bonus (BDT)</label>
+                        <input type="number" id="b_bonus" placeholder="e.g. 200,000" oninput="calcBreakdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Other Allowances (BDT)</label>
+                        <input type="number" id="b_other" placeholder="e.g. 0" oninput="calcBreakdown()">
+                    </div>
+                    <div class="gross-display">
+                        <span class="gd-label">&#8594; Calculated Gross Salary</span>
+                        <span class="gd-val" id="gross_from_breakdown">BDT 0</span>
+                    </div>
+                </div>
+            </div>
 
-    <br>
-    <label>Festival Bonus (BDT):</label>
-    <div class="note">Depends on company policy; usually fully taxable if not exempt</div>
-    <input type="number" id="bonus" placeholder="Ex: 62900">
+            <!-- 3. PERQUISITES -->
+            <div class="sub-card">
+                <div class="sub-card-head" onclick="toggleCard('perq')">
+                    <span>&#128664; Employer-Provided Benefits</span>
+                    <span class="chev" id="chev_perq">&#9660;</span>
+                </div>
+                <div class="sub-card-body" id="body_perq">
+                    <p class="note" style="margin-top:0;">These are added to Net Taxable Income per Section 33.</p>
 
-    <br>
-    <label>Investment Amount (BDT, optional):</label>
-    <div class="note">Approved instruments for 15% rebate</div>
-    <input type="number" id="investment" placeholder="Ex: 70000">
+                    <!-- Vehicle -->
+                    <div class="perq-block">
+                        <span class="perq-label">Company Vehicle</span>
+                        <div class="perq-toggle">
+                            <input type="radio" name="vehicle" id="v_none" value="none" checked>
+                            <label class="pt-label" for="v_none" onclick="showPerqDetail('vd',false);liveCalc();">None</label>
+                            <input type="radio" name="vehicle" id="v_yes" value="yes">
+                            <label class="pt-label" for="v_yes" onclick="showPerqDetail('vd',true);liveCalc();">Provided</label>
+                        </div>
+                        <div class="perq-extra" id="vd" style="display:none;">
+                            <div class="input-group" style="margin-bottom:0">
+                                <label>Engine Displacement</label>
+                                <select id="car_cc" onchange="liveCalc()">
+                                    <option value="180000">Up to 1,500 cc &nbsp;(+BDT 15,000/month)</option>
+                                    <option value="240000">1,501–2,000 cc &nbsp;(+BDT 20,000/month)</option>
+                                    <option value="360000">2,001–2,500 cc &nbsp;(+BDT 30,000/month)</option>
+                                    <option value="600000">Above 2,500 cc &nbsp;(+BDT 50,000/month)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-    <br>
-    <button onclick="calculateTax()">Calculate Tax</button>
+                    <!-- Accommodation -->
+                    <div class="perq-block">
+                        <span class="perq-label">Company Accommodation</span>
+                        <div class="perq-toggle">
+                            <input type="radio" name="accom" id="ac_none" value="none" checked>
+                            <label class="pt-label" for="ac_none" onclick="showPerqDetail('acd',false);liveCalc();">None</label>
+                            <input type="radio" name="accom" id="ac_yes" value="yes">
+                            <label class="pt-label" for="ac_yes" onclick="showPerqDetail('acd',true);liveCalc();">Provided</label>
+                        </div>
+                        <div class="perq-extra" id="acd" style="display:none;">
+                            <div class="input-group" style="margin-bottom:0">
+                                <label>Annual Rent Paid by Employer (BDT)</label>
+                                <input type="number" id="accom_rent" placeholder="e.g. 480,000" oninput="liveCalc()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <div class="output" id="output"></div>
+            <!-- 4. INVESTMENTS -->
+            <div class="sub-card">
+                <div class="sub-card-head" onclick="toggleCard('inv')">
+                    <span>&#128200; Investments &amp; Rebate</span>
+                    <span class="chev" id="chev_inv">&#9660;</span>
+                </div>
+                <div class="sub-card-body" id="body_inv">
+                    <p class="note" style="margin-top:0;">Rebate = 15% × MIN(total eligible, 20% of NTI, BDT 1,000,000)</p>
+                    <div class="input-group">
+                        <label>DPS — Deposit Pension Scheme (BDT)</label>
+                        <div class="input-with-cap">
+                            <input type="number" id="inv_dps" placeholder="0" oninput="liveCalc()">
+                            <span class="cap-tag">Cap 1,20,000</span>
+                        </div>
+                        <div class="note">Only BDT 120,000 is eligible even if you invest more.</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Sanchayapatra / Govt. Savings Bonds (BDT)</label>
+                        <input type="number" id="inv_sancha" placeholder="0" oninput="liveCalc()">
+                    </div>
+                    <div class="input-group">
+                        <label>Stock Market Investment (BDT)</label>
+                        <input type="number" id="inv_sec" placeholder="0" oninput="liveCalc()">
+                        <div class="note">Shares, bonds &amp; mutual funds listed on DSE/CSE.</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Life Insurance Premium (BDT)</label>
+                        <input type="number" id="inv_life" placeholder="0" oninput="liveCalc()">
+                    </div>
+                    <div class="inv-total">
+                        <span class="it-label">Total Eligible Investment</span>
+                        <span class="it-val" id="inv_total_display">BDT 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calc-btn" onclick="liveCalc()">Calculate Tax</button>
+        </div>
+
+        <!-- RIGHT COLUMN: RESULTS -->
+        <div class="calc-right">
+            <div class="results-panel" id="results_panel">
+                <div class="rp-header">
+                    Tax Assessment
+                    <span class="live-dot" title="Live"></span>
+                </div>
+                <div class="rp-placeholder">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                        <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/>
+                        <line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/>
+                    </svg>
+                    Enter your gross salary to see<br>your full tax breakdown.
+                </div>
+                <div class="rp-body" id="rp_body"></div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section id="tips">
     <h2>Tips to Minimize Tax</h2>
     <ul>
-        <li>Invest in approved instruments to get a 15% rebate.</li>
-        <li>Ensure HRA, medical, and conveyance are properly documented in salary slip.</li>
-        <li>Consider provident fund contributions.</li>
-        <li>Check company festival bonus and insurance schemes for exemptions.</li>
-        <li>Use the calculator to find the minimum investment required to reduce tax to the DNCC minimum.</li>
+        <li><strong>Maximize DPS:</strong> Up to BDT 120,000 in DPS counts toward the rebate. At 15%, that's up to BDT 18,000 saved.</li>
+        <li><strong>Buy Sanchayapatra:</strong> Government savings bonds are among the safest eligible investments with competitive yields.</li>
+        <li><strong>File on time:</strong> Submit your return by <strong>November 30</strong> — late filing forfeits the entire 15% investment rebate.</li>
+        <li><strong>Understand the standard exemption:</strong> The 1/3 rule automatically applies. No need to split your salary into separate allowances for tax purposes.</li>
+        <li><strong>Check perquisite impact:</strong> A company car adds BDT 180,000–600,000 to your taxable income. Factor this in when evaluating compensation packages.</li>
+        <li><strong>Use the calculator's optimization tip</strong> to find the exact additional investment needed to minimize your tax to the statutory minimum.</li>
     </ul>
 </section>
 
 <footer>
     <div class="footer-content">
         <div class="footer-disclaimer">
-            <p>Disclaimer: For estimation purposes only. Consult NBR or a tax professional for exact figures.</p>
+            <p>Disclaimer: For estimation purposes only. Tax rules may be subject to further amendment. Consult NBR or a qualified tax professional for exact figures.</p>
         </div>
-        
         <ul class="social-media">
             <li>
-                <a href="https://scholar.google.com/citations?user=uTQLsvEAAAAJ&hl=en" class="list-link" target="_blank" title="Google Scholar">
+                <a href="https://scholar.google.com/citations?user=uTQLsvEAAAAJ&hl=en" target="_blank" title="Google Scholar">
                     <img src="https://scholar.google.com/favicon.ico" alt="Google Scholar">
-                </a> 
+                </a>
             </li>
             <li>
-                <a href="https://www.facebook.com/hossain.sm.riad" class="list-link" target="_blank" title="Facebook">
+                <a href="https://www.facebook.com/hossain.sm.riad" target="_blank" title="Facebook">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
                 </a>
             </li>
             <li>
-                <a href="https://www.linkedin.com/in/smriad658/" class="list-link" target="_blank" title="LinkedIn">
+                <a href="https://www.linkedin.com/in/smriad658/" target="_blank" title="LinkedIn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                 </a>
             </li>
             <li>
-                <a href="https://github.com/SMRiadHossain" class="list-link" target="_blank" title="GitHub">
+                <a href="https://github.com/SMRiadHossain" target="_blank" title="GitHub">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
                 </a>
-            </li>    
+            </li>
             <li>
-                <a href="https://smriadhossain.github.io/RiadHossain/" class="list-link" target="_blank" title="Personal Website">
+                <a href="https://smriadhossain.github.io/RiadHossain/" target="_blank" title="Personal Website">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                     </svg>
                 </a>
-            </li>                
+            </li>
         </ul>
-        
         <div class="footer-bottom">
             <p>&copy; 2025 S M Riad Hossain. All rights reserved.</p>
         </div>
@@ -438,68 +699,259 @@
 </footer>
 
 <script>
-function calculateTax() {
-    let basic = parseFloat(document.getElementById('basic').value) || 0;
-    let hra = parseFloat(document.getElementById('hra').value) || 0;
-    let medical = parseFloat(document.getElementById('medical').value) || 0;
-    let convey = parseFloat(document.getElementById('conveyance').value) || 0;
-    let bonus = parseFloat(document.getElementById('bonus').value) || 0;
-    let investment = parseFloat(document.getElementById('investment').value) || 0;
-
-    // Apply exemptions
-    let hraExempt = Math.min(hra, basic*0.5);
-    let medicalExempt = Math.min(medical, basic*0.10);
-    let conveyExempt = Math.min(convey, 30000);
-    let bonusExempt = 0; // assume fully taxable
-
-    let taxableIncome = basic + (hra - hraExempt) + (medical - medicalExempt) + (convey - conveyExempt) + (bonus - bonusExempt);
-
-    // Compute slab tax
-    let slabTax = 0;
-    let remaining = taxableIncome;
-
-    if(remaining > 350000) {
-        remaining -= 350000;
-        slabTax += 0;
-        if(remaining > 100000) {
-            slabTax += 100000*0.05;
-            remaining -= 100000;
-            slabTax += remaining*0.10;
-        } else {
-            slabTax += remaining*0.05;
-        }
-    } else {
-        slabTax += 0;
-    }
-
-    // Apply rebate
-    let rebate = investment * 0.15;
-    let taxAfterRebate = Math.max(slabTax - rebate, 0);
-
-    // Apply minimum tax
-    let minTax = 5000;
-    let finalTax = taxAfterRebate < minTax ? minTax : taxAfterRebate;
-
-    // Suggest investment to reach min tax if not already
-    let suggestion = '';
-    if(taxAfterRebate > minTax){
-        let needed = Math.ceil((taxAfterRebate - minTax)/0.15);
-        suggestion = `Invest approximately ${needed.toLocaleString()} BDT more to reduce tax to the DNCC minimum of 5,000 BDT.`;
-    } else {
-        suggestion = 'Your tax is minimized to DNCC minimum.';
-    }
-
-    // Display output
-    document.getElementById('output').innerHTML = `
-        <h3>Estimated Tax Summary</h3>
-        <p><strong>Taxable Income:</strong> ${taxableIncome.toLocaleString()} BDT</p>
-        <p><strong>Slab Tax:</strong> ${slabTax.toLocaleString()} BDT</p>
-        <p><strong>Tax After Rebate:</strong> ${taxAfterRebate.toLocaleString()} BDT</p>
-        <p><strong>Final Tax Payable (Min Tax Applied):</strong> ${finalTax.toLocaleString()} BDT</p>
-        <p><strong>Suggestion:</strong> ${suggestion}</p>
-    `;
+/* ============================
+   HELPERS
+   ============================ */
+function fmt(n) {
+    return Math.round(n).toLocaleString('en-BD');
 }
-</script>
+function v(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+}
+function toggleCard(key) {
+    var body = document.getElementById('body_' + key);
+    var head = body.previousElementSibling;
+    var chev = document.getElementById('chev_' + key);
+    var open = body.classList.contains('open');
+    body.classList.toggle('open', !open);
+    head.classList.toggle('open', !open);
+}
+function showPerqDetail(id, show) {
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+}
 
+/* ============================
+   PROFILE — threshold logic
+   ============================ */
+function getThreshold() {
+    var special = document.getElementById('special_cat').value;
+    if (special === 'ff') return 525000;
+    if (special === 'disabled') return 500000;
+    var gender = document.querySelector('input[name="gender"]:checked').value;
+    var age = document.querySelector('input[name="age"]:checked').value;
+    if (gender === 'female' || age === 'senior') return 425000;
+    return 375000;
+}
+function updateThresholdPill() {
+    var t = getThreshold();
+    document.getElementById('threshold_display').innerHTML =
+        'Tax-Free Threshold: <strong>BDT ' + fmt(t) + '</strong>';
+}
+document.querySelectorAll('input[name="gender"], input[name="age"]').forEach(function(el) {
+    el.addEventListener('change', function() { updateThresholdPill(); liveCalc(); });
+});
+
+/* ============================
+   BREAKDOWN → GROSS SYNC
+   ============================ */
+function calcBreakdown() {
+    var total = v('b_basic') + v('b_hra') + v('b_medical') + v('b_convey') + v('b_bonus') + v('b_other');
+    document.getElementById('gross_from_breakdown').textContent = 'BDT ' + fmt(total);
+    document.getElementById('gross_salary').value = total > 0 ? Math.round(total) : '';
+    liveCalc();
+}
+function syncGross() {
+    /* clear breakdown fields when user types directly in gross */
+    ['b_basic','b_hra','b_medical','b_convey','b_bonus','b_other'].forEach(function(id) {
+        document.getElementById(id).value = '';
+    });
+    document.getElementById('gross_from_breakdown').textContent = 'BDT 0';
+}
+
+/* ============================
+   INVESTMENT TOTAL DISPLAY
+   ============================ */
+function updateInvTotal() {
+    var dps = Math.min(v('inv_dps'), 120000);
+    var total = dps + v('inv_sancha') + v('inv_sec') + v('inv_life');
+    document.getElementById('inv_total_display').textContent = 'BDT ' + fmt(total);
+    return { dps: dps, total: total };
+}
+
+/* ============================
+   CORE TAX ENGINE (Finance Ordinance 2025)
+   ============================ */
+function computeTax() {
+    var gross = v('gross_salary');
+    if (gross <= 0) return null;
+
+    var threshold = getThreshold();
+    var isLate = document.getElementById('late_filing').checked;
+    var isFirst = document.getElementById('first_time').checked;
+
+    /* Step 1: Standard Exemption */
+    var exemption = Math.min(gross / 3, 500000);
+    var salaryBase = gross - exemption;
+    var exemptionLabel = (gross / 3 <= 500000) ? '1/3 of Gross' : 'Capped at 500,000';
+
+    /* Step 2: Perquisites */
+    var carAdd = 0, accomAdd = 0;
+    var vehicleSel = document.querySelector('input[name="vehicle"]:checked');
+    if (vehicleSel && vehicleSel.value === 'yes') {
+        carAdd = parseInt(document.getElementById('car_cc').value) || 0;
+    }
+    var accomSel = document.querySelector('input[name="accom"]:checked');
+    if (accomSel && accomSel.value === 'yes') {
+        accomAdd = v('accom_rent');
+    }
+    var perqTotal = carAdd + accomAdd;
+
+    /* Step 3: Net Taxable Income */
+    var nti = salaryBase + perqTotal;
+
+    /* Step 4: Slab tax */
+    var slabs = [
+        { label: 'Threshold (' + fmt(threshold) + ')', size: threshold, rate: 0 },
+        { label: 'Next 3,00,000', size: 300000, rate: 0.10 },
+        { label: 'Next 4,00,000', size: 400000, rate: 0.15 },
+        { label: 'Next 5,00,000', size: 500000, rate: 0.20 },
+        { label: 'Next 20,00,000', size: 2000000, rate: 0.25 },
+        { label: 'Remaining', size: Infinity, rate: 0.30 }
+    ];
+    var remaining = nti;
+    var grossTax = 0;
+    var slabResults = slabs.map(function(s) {
+        if (remaining <= 0) return { label: s.label, taxable: 0, rate: s.rate, tax: 0, status: 'empty' };
+        var slice = s.size === Infinity ? remaining : Math.min(remaining, s.size);
+        var tax = slice * s.rate;
+        remaining -= slice;
+        grossTax += tax;
+        return { label: s.label, taxable: slice, rate: s.rate, tax: tax,
+                 status: tax === 0 ? 'zero' : 'active' };
+    });
+
+    /* Step 5: Investment rebate */
+    var inv = updateInvTotal();
+    var cap1 = inv.total;           /* actual eligible */
+    var cap2 = nti * 0.20;          /* 20% of NTI */
+    var cap3 = 1000000;             /* absolute max */
+    var rebatePrincipal = Math.min(cap1, cap2, cap3);
+    var bindingCap = rebatePrincipal === cap1 ? 'actual' : (rebatePrincipal === cap2 ? '20% NTI' : '10L cap');
+    var rebate = isLate ? 0 : rebatePrincipal * 0.15;
+
+    /* Step 6: Net tax & minimum */
+    var netTax = Math.max(grossTax - rebate, 0);
+    var minTax = isFirst ? 1000 : 5000;
+    var minApplied = (nti > threshold) && (netTax < minTax);
+    var finalTax = minApplied ? minTax : netTax;
+
+    /* Step 7: Optimization tip */
+    var optTip = null;
+    if (!isLate && nti > threshold && netTax > minTax) {
+        var additionalNeeded = Math.ceil((netTax - minTax) / 0.15);
+        var currentTotal = inv.total;
+        var remainingCap = Math.min(cap2, cap3) - currentTotal;
+        if (remainingCap > 0) {
+            var toInvest = Math.min(additionalNeeded, remainingCap);
+            var saving = Math.min(toInvest * 0.15, netTax - minTax);
+            optTip = { invest: toInvest, save: saving };
+        }
+    }
+
+    return {
+        gross, exemption, exemptionLabel, salaryBase,
+        carAdd, accomAdd, perqTotal, nti, threshold,
+        slabResults, grossTax,
+        inv, cap1, cap2, cap3, rebatePrincipal, bindingCap, rebate,
+        isLate, isFirst,
+        netTax, minTax, minApplied, finalTax,
+        optTip
+    };
+}
+
+/* ============================
+   RENDER RESULTS
+   ============================ */
+function renderResults(r) {
+    var panel = document.getElementById('results_panel');
+    var body = document.getElementById('rp_body');
+    panel.classList.add('live');
+
+    var html = '';
+
+    /* A: Income Summary */
+    html += '<div class="rs"><h4>Income Summary</h4>';
+    html += '<div class="rr"><span class="rl">Gross Annual Salary</span><span class="rv">BDT ' + fmt(r.gross) + '</span></div>';
+    html += '<div class="rr sub"><span class="rl">Standard Exemption <small style="color:#aaa;font-size:0.72rem;">(' + r.exemptionLabel + ')</small></span><span class="rv">− BDT ' + fmt(r.exemption) + '</span></div>';
+    if (r.carAdd > 0) html += '<div class="rr add"><span class="rl">Perquisite: Company Vehicle</span><span class="rv">+ BDT ' + fmt(r.carAdd) + '</span></div>';
+    if (r.accomAdd > 0) html += '<div class="rr add"><span class="rl">Perquisite: Accommodation</span><span class="rv">+ BDT ' + fmt(r.accomAdd) + '</span></div>';
+    html += '<div class="rr tot"><span class="rl">Net Taxable Income</span><span class="rv">BDT ' + fmt(r.nti) + '</span></div>';
+    html += '</div>';
+
+    /* B: Slab Breakdown */
+    html += '<div class="rs"><h4>Progressive Slab Tax</h4>';
+    html += '<table class="slab-table">';
+    r.slabResults.forEach(function(s) {
+        var cls = s.status === 'active' ? 's-active' : (s.status === 'zero' ? 's-zero' : 's-empty');
+        html += '<tr class="' + cls + '"><td>' + s.label + '</td>';
+        html += '<td>' + Math.round(s.rate * 100) + '%</td>';
+        html += '<td>' + (s.taxable > 0 ? 'BDT ' + fmt(s.tax) : '—') + '</td></tr>';
+    });
+    html += '</table>';
+    html += '<div class="rr tot" style="margin-top:8px;"><span class="rl">Gross Slab Tax</span><span class="rv">BDT ' + fmt(r.grossTax) + '</span></div>';
+    html += '</div>';
+
+    /* C: Rebate */
+    html += '<div class="rs"><h4>Investment Rebate</h4>';
+    html += '<div class="rr"><span class="rl">Total Eligible Investment</span><span class="rv">BDT ' + fmt(r.cap1) + '</span></div>';
+
+    /* cap pills */
+    var caps = [
+        { label: 'Actual: BDT ' + fmt(r.cap1), val: r.cap1 },
+        { label: '20% of NTI: BDT ' + fmt(r.cap2), val: r.cap2 },
+        { label: '10L cap', val: r.cap3 }
+    ];
+    html += '<div class="cap-pills">';
+    caps.forEach(function(c) {
+        var isBind = Math.abs(c.val - r.rebatePrincipal) < 1;
+        html += '<span class="cap-pill ' + (isBind ? 'binding' : 'out') + '">' + c.label + '</span>';
+    });
+    html += '</div>';
+
+    if (r.isLate) {
+        html += '<div style="margin-top:8px;font-size:0.78rem;color:#c0392b;font-weight:600;">Late filing — rebate forfeited</div>';
+    } else {
+        html += '<div class="rr rebate" style="margin-top:6px;"><span class="rl">Rebate Principal × 15%</span><span class="rv">− BDT ' + fmt(r.rebate) + '</span></div>';
+    }
+    html += '<div class="rr tot"><span class="rl">Net Tax After Rebate</span><span class="rv">BDT ' + fmt(r.netTax) + '</span></div>';
+    html += '</div>';
+
+    /* Late filing warning */
+    if (r.isLate) {
+        html += '<div class="late-warn">&#9888; Late filing forfeits the 15% investment rebate. File by <strong>November 30</strong> to recover up to BDT ' + fmt(r.rebatePrincipal * 0.15) + ' in savings.</div>';
+    }
+
+    /* D: Final box */
+    html += '<div class="final-box"><div class="fb-label">Final Tax Payable to NBR';
+    if (r.minApplied) html += '<span class="mintax-badge">Minimum Tax ' + (r.isFirst ? '1,000' : '5,000') + ' Applied</span>';
+    html += '</div><div class="fb-amount">BDT ' + fmt(r.finalTax) + '</div></div>';
+
+    /* E: Optimization tip */
+    if (r.optTip) {
+        html += '<div class="opt-tip"><strong>&#128161; Optimization Tip</strong>Invest an additional <strong>BDT ' + fmt(r.optTip.invest) + '</strong> in eligible instruments to save up to <strong>BDT ' + fmt(r.optTip.save) + '</strong> in tax.</div>';
+    } else if (!r.isLate && r.nti > r.threshold && r.netTax <= r.minTax) {
+        html += '<div class="opt-tip"><strong>&#10003; Fully Optimized</strong>Your tax is already at or below the statutory minimum of BDT ' + fmt(r.minTax) + '.</div>';
+    }
+
+    body.innerHTML = html;
+}
+
+/* ============================
+   LIVE CALC ENTRY POINT
+   ============================ */
+function liveCalc() {
+    updateInvTotal();
+    updateThresholdPill();
+    var result = computeTax();
+    if (!result) {
+        document.getElementById('results_panel').classList.remove('live');
+        return;
+    }
+    renderResults(result);
+}
+
+/* Init */
+updateThresholdPill();
+</script>
 </body>
 </html>
